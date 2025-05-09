@@ -1,5 +1,7 @@
 import './index.css'
 import {Component} from 'react'
+import Cookies from 'js-cookie'
+import {Redirect} from 'react-router-dom'
 
 class Login extends Component {
   state = {
@@ -7,7 +9,7 @@ class Login extends Component {
     password: '',
     showSubmitError: false,
     errorMsg: '',
-    showPassword: false
+    showPassword: false,
   }
 
   onChangeUsername = event => {
@@ -19,13 +21,17 @@ class Login extends Component {
   }
 
   onClickShowPassword = () => {
-    this.setState((prevState)=>({
-      showPassword: !prevState.showPassword
+    this.setState(prevState => ({
+      showPassword: !prevState.showPassword,
     }))
   }
 
-  onSubmitSuccess = () => {
+  onSubmitSuccess = jwtToken => {
     const {history} = this.props
+    Cookies.set('jwt_token', jwtToken, {
+      expires: 30,
+      path: '/',
+    })
     history.replace('/')
   }
 
@@ -53,7 +59,7 @@ class Login extends Component {
 
   renderPasswordField = () => {
     const {password, showPassword} = this.state
-    const type = showPassword? "text" : "password"
+    const type = showPassword ? 'text' : 'password'
     return (
       <>
         <label className="input-label" htmlFor="password">
@@ -92,6 +98,10 @@ class Login extends Component {
 
   render() {
     const {showSubmitError, errorMsg} = this.state
+    const jwtToken = Cookies.get('jwt_token')
+    if (jwtToken !== undefined){
+      return <Redirect to="/"/>
+    }
     return (
       <div className="login-form-container">
         <form className="form-container" onSubmit={this.submitForm}>
@@ -103,7 +113,11 @@ class Login extends Component {
           <div className="input-container">{this.renderUsernameField()}</div>
           <div className="input-container">{this.renderPasswordField()}</div>
           <div className="show-password-container">
-            <input type="checkbox" id="showpassword" onClick={this.onClickShowPassword}/>
+            <input
+              type="checkbox"
+              id="showpassword"
+              onClick={this.onClickShowPassword}
+            />
             <label className="input-label" htmlFor="showpassword">
               Show Password
             </label>
