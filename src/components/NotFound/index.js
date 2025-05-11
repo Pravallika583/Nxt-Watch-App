@@ -1,7 +1,5 @@
-import "./index.css"
+import './index.css'
 
-const NotFound = () => (
-    <div>Not Found</div>
-)
+const NotFound = () => <div>Not Found</div>
 
 export default NotFound

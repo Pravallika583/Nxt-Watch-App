@@ -1,7 +1,18 @@
-import './index.css'
+import {Redirect} from 'react-router-dom'
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import {Redirect} from 'react-router-dom'
+import {
+  LoginFormContainer,
+  FormContainer,
+  WebsiteLogo,
+  InputContainer,
+  InputLabel,
+  UsernameInput,
+  PasswordInput,
+  ShowPasswordContainer,
+  LoginButton,
+  ErrorMessage,
+} from './styledComponents'
 
 class Login extends Component {
   state = {
@@ -62,13 +73,10 @@ class Login extends Component {
     const type = showPassword ? 'text' : 'password'
     return (
       <>
-        <label className="input-label" htmlFor="password">
-          PASSWORD
-        </label>
-        <input
+        <InputLabel htmlFor="password">PASSWORD</InputLabel>
+        <PasswordInput
           type={type}
           id="password"
-          className="password-input-field"
           placeholder="Password"
           value={password}
           onChange={this.onChangePassword}
@@ -81,13 +89,10 @@ class Login extends Component {
     const {username} = this.state
     return (
       <>
-        <label className="input-label" htmlFor="username">
-          USERNAME
-        </label>
-        <input
+        <InputLabel htmlFor="username">USERNAME</InputLabel>
+        <UsernameInput
           type="text"
           id="username"
-          className="username-input-field"
           placeholder="Username"
           value={username}
           onChange={this.onChangeUsername}
@@ -99,35 +104,31 @@ class Login extends Component {
   render() {
     const {showSubmitError, errorMsg} = this.state
     const jwtToken = Cookies.get('jwt_token')
-    if (jwtToken !== undefined){
-      return <Redirect to="/"/>
+    if (jwtToken !== undefined) {
+      return <Redirect to="/" />
     }
+
     return (
-      <div className="login-form-container">
-        <form className="form-container" onSubmit={this.submitForm}>
-          <img
+      <LoginFormContainer>
+        <FormContainer onSubmit={this.submitForm}>
+          <WebsiteLogo
             src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
-            className="login-website-logo-desktop-image"
             alt="website logo"
           />
-          <div className="input-container">{this.renderUsernameField()}</div>
-          <div className="input-container">{this.renderPasswordField()}</div>
-          <div className="show-password-container">
+          <InputContainer>{this.renderUsernameField()}</InputContainer>
+          <InputContainer>{this.renderPasswordField()}</InputContainer>
+          <ShowPasswordContainer>
             <input
               type="checkbox"
               id="showpassword"
               onClick={this.onClickShowPassword}
             />
-            <label className="input-label" htmlFor="showpassword">
-              Show Password
-            </label>
-          </div>
-          <button type="submit" className="login-button">
-            Login
-          </button>
-          {showSubmitError && <p className="error-message">*{errorMsg}</p>}
-        </form>
-      </div>
+            <InputLabel htmlFor="showpassword">Show Password</InputLabel>
+          </ShowPasswordContainer>
+          <LoginButton type="submit">Login</LoginButton>
+          {showSubmitError && <ErrorMessage>*{errorMsg}</ErrorMessage>}
+        </FormContainer>
+      </LoginFormContainer>
     )
   }
 }
